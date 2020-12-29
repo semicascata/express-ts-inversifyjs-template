@@ -7,6 +7,7 @@ import { HomeService } from "../api/services/home.service";
 import { HomeController } from "../api/controllers/home.controller";
 import { AuthService } from "../api/services/auth.service";
 import { AuthController } from "../api/controllers/auth.controller";
+import { JwtMiddleware } from "../api/middlewares/jwt.middleware";
 
 export class ContainerConfigLoader {
   public static Load(): Container {
@@ -14,6 +15,7 @@ export class ContainerConfigLoader {
 
     // config
     container.bind<MongoDbConnection>(TYPES.MongoDbConnection).to(MongoDbConnection).inSingletonScope();
+    container.bind<JwtMiddleware>(TYPES.JwtMiddleware).to(JwtMiddleware);
 
     // services
     container.bind<BookService>(TYPES.BookService).to(BookService);

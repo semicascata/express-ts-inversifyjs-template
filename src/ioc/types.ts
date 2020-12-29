@@ -1,6 +1,7 @@
 export const TYPES = {
-  // other
+  // middlewares and etc
   MongoDbConnection: Symbol("MongoDbConnection"),
+  JwtMiddleware: Symbol("JwtMiddleware"),
 
   // services
   BookService: Symbol.for("BookService"),

@@ -1,13 +1,18 @@
 import { injectable } from "inversify";
 import Logger from "../../config/logger.config";
-import UserModel from "../models/user.model";
 import { NewUserDto } from "../dto/new-user.dto";
 import User, { IUser } from "../models/user.model";
+import { CredentialsDto } from "../dto/credentials.dto";
+import * as argon2 from "argon2";
+import { IToken } from "../interfaces/token.interface";
+import { IPayload } from "../interfaces/payload.interface";
+import * as jwt from "jsonwebtoken";
+import { jwtSecret, jwtExpiresIn, jwtRefresh, jwtRefresyExpiresIn } from "../../config/env.config";
 
 @injectable()
 export class AuthService {
   private logger = Logger;
-  private userModel = UserModel;
+  private tokenList: any = {};
 
   public async registerUser(newUserDto: NewUserDto): Promise<any> {
     const { username, email, password, password2, role } = newUserDto;
@@ -40,5 +45,45 @@ export class AuthService {
         statusCode: 409,
       };
     }
+  }
+
+  public async loginUser(credentialsDto: CredentialsDto): Promise<IToken> {
+    const user = await User.findOne({ username: credentialsDto.username }).select("+password");
+
+    // check passwords
+    const isMatch = await argon2.verify(user.password, credentialsDto.password);
+
+    if (user && isMatch) {
+      const tokens: IToken = await this.createTokens(user);
+
+      const data = {
+        userId: user.id,
+      };
+
+      // token store
+      this.tokenList[tokens.refreshToken] = data;
+
+      this.logger.verbose(`user "${user.username}" logged in!`);
+
+      return tokens;
+    }
+  }
+
+  // generate tokens
+  async createTokens(user: IUser): Promise<IToken> {
+    const payload: IPayload = { id: user.id };
+
+    const token = jwt.sign(payload, jwtSecret, {
+      expiresIn: jwtExpiresIn,
+    });
+
+    const refreshToken = jwt.sign(payload, jwtRefresh, {
+      expiresIn: jwtRefresyExpiresIn,
+    });
+
+    return {
+      token,
+      refreshToken,
+    };
   }
 }

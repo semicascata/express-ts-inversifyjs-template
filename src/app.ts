@@ -7,6 +7,7 @@ import { port, url } from "./config/env.config";
 import Logger from "./config/logger.config";
 import { MongoDbConnection } from "./config/mongodb.config";
 import { TYPES } from "./ioc/types";
+import passport from "passport";
 
 const serverBootstrap = async () => {
   try {
@@ -21,6 +22,7 @@ const serverBootstrap = async () => {
       app.use(cors());
       app.use(express.urlencoded({ extended: true }));
       app.use(express.json());
+      app.use(passport.initialize());
     });
 
     const serverInstance = server.build();

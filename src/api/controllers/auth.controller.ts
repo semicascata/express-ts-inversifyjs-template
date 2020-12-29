@@ -17,4 +17,11 @@ export class AuthController extends BaseHttpController {
     const statusCode = 201;
     return this.json(content, statusCode);
   }
+
+  @httpPost("/login")
+  public async loginUser(req: Request, res: Response, next: NextFunction): Promise<JsonResult> {
+    const content = await this.authService.loginUser(req.body);
+    const statusCode = 201;
+    return this.json(content, statusCode);
+  }
 }

@@ -11,7 +11,7 @@ export class BookController extends BaseHttpController {
     super();
   }
 
-  @httpGet("/")
+  @httpGet("/", TYPES.JwtMiddleware)
   public async getBooks(req: Request, res: Response, next: NextFunction): Promise<JsonResult> {
     const content = await this.bookService.getBooks();
     const statusCode = 200;
