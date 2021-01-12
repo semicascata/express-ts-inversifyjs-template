@@ -4,6 +4,8 @@ import { BaseHttpController, controller, httpGet, httpPost } from "inversify-exp
 import { JsonResult } from "inversify-express-utils/dts/results";
 import { TYPES } from "../../ioc/types";
 import { BookService } from "../services/book.service";
+import { Role } from "../interfaces/role.interface";
+import { AuthRole } from "../middlewares/role.middleware";
 
 @controller("/api/v1/books")
 export class BookController extends BaseHttpController {

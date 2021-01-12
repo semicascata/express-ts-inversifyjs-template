@@ -71,7 +71,7 @@ export class AuthService {
 
   // generate tokens
   async createTokens(user: IUser): Promise<IToken> {
-    const payload: IPayload = { id: user.id };
+    const payload: IPayload = { id: user.id, role: user.role };
 
     const token = jwt.sign(payload, jwtSecret, {
       expiresIn: jwtExpiresIn,
