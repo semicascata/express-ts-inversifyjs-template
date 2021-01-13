@@ -13,7 +13,7 @@ export class BookController extends BaseHttpController {
     super();
   }
 
-  @httpGet("/", TYPES.JwtMiddleware)
+  @httpGet("/", TYPES.JwtMiddleware, AuthRole(Role.admin))
   public async getBooks(req: Request, res: Response, next: NextFunction): Promise<JsonResult> {
     const content = await this.bookService.getBooks();
     const statusCode = 200;

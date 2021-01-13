@@ -50,6 +50,11 @@ export class AuthService {
   public async loginUser(credentialsDto: CredentialsDto): Promise<IToken> {
     const user = await User.findOne({ username: credentialsDto.username }).select("+password");
 
+    if (!user) {
+      this.logger.error(`user "${credentialsDto.username}" not found`);
+      return;
+    }
+
     // check passwords
     const isMatch = await argon2.verify(user.password, credentialsDto.password);
 
